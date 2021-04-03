@@ -8,24 +8,28 @@
 
 DHT dht(DHT_PIN);
 
+// record the readings of the sensor
 double temp;
 
 void postEventPayload(double temp) {
      JsonWriterStatic<256> jw;
      {
          JsonWriterAutoObject obj(&jw);
-         jw.insertKeyValue("temp", temp);
+         jw.insertKeyValue("temperature", temp);
      }
+     // sent the data in Json format
      Particle.publish("dht11", jw.getBuffer(), PRIVATE);
 }
 
+// initialize the partical 
 void setup() {
   dht.begin();
   pinMode(DHT_PIN, INPUT);
 }
 
+// read the temperature every 30s
 void loop() {
   temp = dht.getTempCelcius();
   postEventPayload(temp);
-  delay(30000);               // Wait for 30 seconds
+  delay(30000);               
 }
